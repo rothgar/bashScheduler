@@ -35,7 +35,7 @@ get_pods() {
   done
 }
 
-# get a list of all nods
+# get a list of all nodes
 get_nodes() {
   i=0
   for n in $(curl -sL "${API_URL}/nodes" |\
