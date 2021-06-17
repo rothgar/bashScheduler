@@ -23,43 +23,48 @@ while true; do
               --all-namespaces \
               --field-selector=status.phase==Pending); do
 
-    # Get the pod namespace
-    NAMESPACE=$(kubectl get pod ${POD} \
-                --output jsonpath='{.metadata.namespace}')
+    SCHEDULER_NAME=$(kubectl get pod ${POD} \
+                    --output jsonpath='{.spec.schedulerName}')
 
-    # Get an array for all of the nodes
-    # We could optionally check if the nodes are ready
-    NODES=($(kubectl --server ${SERVER} get nodes \
-            --output jsonpath='{.items..metadata.name}'))
+    if [ "${SCHEDULER_NAME}" == "${SCHEDULER}" ]; then
+      # Get the pod namespace
+      NAMESPACE=$(kubectl get pod ${POD} \
+                  --output jsonpath='{.metadata.namespace}')
 
-    # Store a number for the length of our NODES array
-    NODES_LENGTH=${#NODES[@]}
+      # Get an array for all of the nodes
+      # We could optionally check if the nodes are ready
+      NODES=($(kubectl --server ${SERVER} get nodes \
+              --output jsonpath='{.items..metadata.name}'))
 
-    # Randomly select a node from the array
-    # $RANDOM % $NODES_LENGTH will be the remainder
-    # of a random number divided by the length of our nodes
-    # In the case of 1 node this is always ${NODES[0]}
-    NODE=${NODES[$[$RANDOM % $NODES_LENGTH]]}
+      # Store a number for the length of our NODES array
+      NODES_LENGTH=${#NODES[@]}
 
-    # Bind the current pod to the node selected
-    curl -silent --show-error --fail \
-      --header "Content-Type:application/json" \
-      --request POST \
-      --data '{"apiVersion":"v1",
-              "kind": "Binding", 
-              "metadata": {
-                "name": "'${POD}'"
-                }, 
-              "target": {
-                "apiVersion": "v1", 
-                "kind": "Node", 
-                "name": "'${NODE}'"
-                }
-              }' \
-      http://${SERVER}/api/v1/namespaces/${NAMESPACE}/pods/${POD}/binding/ \
-      && echo "Assigned ${POD} to ${NODE}" \
-      || echo "Failed to assign ${POD} to ${NODE}"
+      # Randomly select a node from the array
+      # $RANDOM % $NODES_LENGTH will be the remainder
+      # of a random number divided by the length of our nodes
+      # In the case of 1 node this is always ${NODES[0]}
+      NODE=${NODES[$[$RANDOM % $NODES_LENGTH]]}
+
+      # Bind the current pod to the node selected
+      curl --silent --fail \
+        --header "Content-Type:application/json" \
+        --request POST \
+        --data '{"apiVersion":"v1",
+                "kind": "Binding", 
+                "metadata": {
+                  "name": "'${POD}'"
+                  }, 
+                "target": {
+                  "apiVersion": "v1", 
+                  "kind": "Node", 
+                  "name": "'${NODE}'"
+                  }
+                }' \
+        http://${SERVER}/api/v1/namespaces/${NAMESPACE}/pods/${POD}/binding/ >/dev/null \
+        && echo "Assigned ${POD} to ${NODE}" \
+        || echo "Failed to assign ${POD} to ${NODE}"
+    fi
   done
-
-  sleep 4s
+  echo "Nothing to do...sleeping."
+  sleep 6s
 done

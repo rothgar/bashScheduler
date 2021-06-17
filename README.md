@@ -12,7 +12,11 @@ Please don't ever use this on a production kubernetes cluster!!!
 
 Run it against a local [kind](https://kind.sigs.k8s.io/) cluster.
 
-Use it by first creating pods that use the custom scdeduler.
+```
+kind create cluster
+```
+
+Create pods that use the custom scdeduler.
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/rothgar/bashScheduler/main/nginx.deploy.yaml
