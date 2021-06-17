@@ -3,29 +3,28 @@ Kubernetes bash scheduler
 
 ### This is a really bad idea
 
-I made it because :bowtie:
-
-I hope you learn how easy it is to extend kubernetes.
+I made it because it was helpful for me to learn :bowtie:
+I hope you learn something too.
 
 ## How to run it 
 
 Please don't ever use this on a production kubernetes cluster!!!
 
-Ideally you'll run it against [minikube](https://github.com/kubernetes/minikube)
+Run it against a local [kind](https://kind.sigs.k8s.io/) cluster.
 
-Use it by first creating pods that use the custom scdeduler api.
+Use it by first creating pods that use the custom scdeduler.
 
 ```
-kubectl create -f nginx-bashScheduler.rc.yaml
+kubectl create -f https://github.com/rothgar/bashScheduler/blob/main/nginx.deploy.yaml
 ```
 
 You should see nginx pods with Pending status
 
 ```
-NAME          READY     STATUS    RESTARTS   AGE
-nginx-5j7lp   0/1       Pending   0          56s
-nginx-g5dz9   0/1       Pending   0          56s
-nginx-psma5   0/1       Pending   0          56s
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-56dcc974bc-8ss4m   0/1     Pending   0          49m                                              
+nginx-56dcc974bc-94ltw   0/1     Pending   0          49m                                              
+nginx-56dcc974bc-tnz6s   0/1     Pending   0          49m 
 ```
 
 Then proxy your localhost to the kubernetes api server
@@ -35,7 +34,7 @@ kubectl proxy
 Starting to serve on 127.0.0.1:8001
 ```
 
-Now in a new shell run
+Now in a new terminal run
 
 ```
 ./scheduler.sh
@@ -43,28 +42,14 @@ Now in a new shell run
 
 You should see similar output to
 ```
-$ ./scheduler.sh
-Scheduling pod nginx-5j7lp on node minikubevm
-Pod nginx-5j7lp scheduled.
-Scheduling pod nginx-g5dz9 on node minikubevm
-Pod nginx-g5dz9 scheduled.
-Scheduling pod nginx-psma5 on node minikubevm
-Pod nginx-psma5 scheduled.
-No pods to schedule. Sleeping...
+curl -sL https://github.com/rothgar/bashScheduler/blob/main/scheduler.sh | bash
+
+Assigned nginx-56dcc974bc-8ss4m to kind-control-plane
+Assigned nginx-56dcc974bc-94ltw to kind-control-plane
+Assigned nginx-56dcc974bc-tnz6s to kind-control-plane
 ```
 
-Look at the code and see what it's doing. Uncomment `set -x` to see all the commands run.
-
-## Extending it
-
-I'll leave it up to the reader to extend the scheduler to run in a pod on your kubernetes cluster. Dependancies are
-
-* bash
-* sed
-* grep
-* awk
-* curl
-
-You can also use TLS certificates with kubernetes default secret for pods
+Look at the code and see what it's doing.
+Uncomment `set -x` to see all the commands run.
 
 Have fun :shipit:
