@@ -11,7 +11,7 @@
 
 set -eo pipefail
 # uncomment to see all commands in stdout
-set -x
+# set -x
 
 SERVER="${SERVER:-localhost:8001}"
 SCHEDULER="${SCHEDULER:-bashScheduler}"

@@ -15,7 +15,7 @@ Run it against a local [kind](https://kind.sigs.k8s.io/) cluster.
 Use it by first creating pods that use the custom scdeduler.
 
 ```
-kubectl create -f https://github.com/rothgar/bashScheduler/blob/main/nginx.deploy.yaml
+kubectl apply -f https://raw.githubusercontent.com/rothgar/bashScheduler/main/nginx.deploy.yaml
 ```
 
 You should see nginx pods with Pending status
@@ -37,13 +37,11 @@ Starting to serve on 127.0.0.1:8001
 Now in a new terminal run
 
 ```
-./scheduler.sh
+curl -sL https://raw.githubusercontent.com/rothgar/bashScheduler/main/scheduler.sh | bash
 ```
 
 You should see similar output to
 ```
-curl -sL https://github.com/rothgar/bashScheduler/blob/main/scheduler.sh | bash
-
 Assigned nginx-56dcc974bc-8ss4m to kind-control-plane
 Assigned nginx-56dcc974bc-94ltw to kind-control-plane
 Assigned nginx-56dcc974bc-tnz6s to kind-control-plane
