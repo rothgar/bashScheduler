@@ -18,7 +18,7 @@ Run it against a local [kind](https://kind.sigs.k8s.io/) cluster.
 kind create cluster
 ```
 
-Create pods that use the custom scdeduler.
+Create pods that use the custom scheduler.
 
 ```
 kubectl apply -f https://raw.githubusercontent.com/rothgar/bashScheduler/main/nginx.deploy.yaml
