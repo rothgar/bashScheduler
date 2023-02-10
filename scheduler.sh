@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # A kubernetes scheduler written in bash
-# dependancies: kubectl, curl
+# dependencies: kubectl, curl
 # Runs against localhost:8001 by default
 # Use `kubectl proxy` to proxy to master without https
 #
